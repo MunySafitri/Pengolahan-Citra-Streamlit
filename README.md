@@ -1,6 +1,10 @@
-# Pengolahan-Citra-Streamlit
-Tugas Mk Pengolahan Citra 2023/2024 USK
+# DIP-Project-zero-to-hero
+make your own web app using streamlit using Python programming language
+You will learn how to use streamlit.
+requirements:-
+  -IDE (Pycharm)
+  -anaconda prompt
+  -installing libraries (streamlit - PIL - opencv)
+Give me thumbs-up...
 
--install modul streamlit
-lalu lanjut
-streamlit run frontend.py
+you will use filters (edge detection - gaussian blur - image sharpening - reduce noise - negative transformation - gray scale)...
