@@ -28,10 +28,15 @@ def Morfologi(image,option):
 
       # Apply morphological closing
       closing = cv2.morphologyEx(binary_mask, cv2.MORPH_CLOSE, kernel)
+      #jika ga ingin gambar binary
+      # closing = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
+
 
       # Display the original image, binary mask, and segmented result
       st.image(image, caption="Original Image", use_column_width=True)
+      #hapus jika tidak menggunakan binary
       st.image(binary_mask, caption="Binary Mask", use_column_width=True)
+      ###
       st.image(closing, caption="Segmented Result (Morphological Closing)", use_column_width=True)
     
     elif option == "Dilation":
@@ -55,13 +60,19 @@ def Morfologi(image,option):
     elif option == "Edge":
          # Convert the image to grayscale
       gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+      kernel = cv2.getStructuringElement(cv2.MORPH_CROSS,(5,5))
+      
+      # Apply binary thresholding to create a binary mask
+      _, binary_mask = cv2.threshold(gray, 128, 255, cv2.THRESH_BINARY)
+
 
       # Apply Canny edge detection
-      edges = cv2.Canny(gray, 100, 200)  # You can adjust the thresholds (100 and 200) as needed
+      edges = cv2.morphologyEx(binary_mask,cv2.MORPH_GRADIENT,kernel)  # You can adjust the thresholds (100 and 200) as needed
 
       # Display the original image and the segmented edges
       st.image(image, caption="Original Image", use_column_width=True)
       st.image(edges, caption="Segmented Edges (Canny)", use_column_width=True)
+
     elif option == "Erosion":
          # Convert the image to grayscale
       gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -108,12 +119,60 @@ def Morfologi(image,option):
         
       # We use warpAffine to transform 
       # the image using the matrix, T 
+      #fungsi untuk melakuakn translasi, rotasi dan operasi skala
       img_translation = cv2.warpAffine(image, T, (width, height)) 
        
        # Display the original image, binary mask, and segmented result
       st.image(image, caption="Original Image", use_column_width=True)
       # st.image(binary_mask, caption="Binary Mask", use_column_width=True)
       st.image(img_translation, caption="Translation Result", use_column_width=True)
+   
+    elif option == "Linear":
+      scale_factor = st.slider("Scale Factor", min_value=0.1, max_value=3.0, value=1.0, step=0.1)
+      # Store height and width of the image 
+      height, width, channels = image.shape
+      new_height = int(height * scale_factor)
+      new_width = int(width * scale_factor)
+
+      # Perform linear interpolation using OpenCV's resize function
+      interpolated_image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+
+      # return interpolated_image
+       
+       # Display the original image, binary mask, and segmented result
+      st.image(image, caption="Original Image", use_column_width=True)
+      # st.image(binary_mask, caption="Binary Mask", use_column_width=True)
+      st.image(interpolated_image, caption="Translation Result", use_column_width=True)
+    
+    elif option == "Bilinear":
+      scale_factor = st.slider("Scale Factor", min_value=0.1, max_value=3.0, value=1.0, step=0.1)
+      # Store height and width of the image 
+      height, width, channels = image.shape
+      new_height = int(height * scale_factor)
+      new_width = int(width * scale_factor)
+
+      # Perform bilinear interpolation using OpenCV's resize function
+      interpolated_image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_LINEAR)
+       
+       # Display the original image, binary mask, and segmented result
+      st.image(image, caption="Original Image", use_column_width=True)
+      # st.image(binary_mask, caption="Binary Mask", use_column_width=True)
+      st.image(interpolated_image, caption="Translation Result", use_column_width=True)
+   
+    elif option == "Cubic":
+      scale_factor = st.slider("Scale Factor", min_value=0.1, max_value=3.0, value=1.0, step=0.1)
+      # Store height and width of the image 
+      height, width, channels = image.shape
+      new_height = int(height * scale_factor)
+      new_width = int(width * scale_factor)
+
+      # Perform cubic interpolation using OpenCV's resize function
+      interpolated_image = cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+
+       # Display the original image, binary mask, and segmented result
+      st.image(image, caption="Original Image", use_column_width=True)
+      # st.image(binary_mask, caption="Binary Mask", use_column_width=True)
+      st.image(interpolated_image, caption="Translation Result", use_column_width=True)
 
 
 def main():
@@ -144,7 +203,7 @@ def main():
         elif option == 'Morfologi':
             # st.header('Gambar yang diinput')
             # st.image(image)
-            option2 = st.selectbox('Pilih Filter',('Pilih','Closing','Dilation','Edge','Erosion','Opening',"Translation"))
+            option2 = st.selectbox('Pilih Filter',('Pilih','Closing','Dilation','Edge','Erosion','Opening',"Translation", "Linear", "Bilinear", "Cubic"))
             if option2 is not None:
                 # st.image(image) 
                 # result = Morfologi(image_cv2,option2)
